@@ -160,6 +160,137 @@ scorecard = my_scorecard(optimized_x_woe,best_model,optimized_woe_summary,0,100)
 
 scorecard.head(50)
 
+
+
+#If I have new data, want to predict Y by whole new data
+test = df
+
+#list all required columns from Scorecard
+all_variable = set(scorecard.Variable_Name)
+
+ 
+import pandas as pd
+data_map = {}
+for var in all_variable:
+    data_map = {}
+    data_type = list(scorecard[scorecard.Variable_Name == var]['Dtype'])[0]
+    
+    if data_type == 'categorical':
+        comb_temp = scorecard[scorecard.Variable_Name == var]['Bin'].tolist()
+        for i in range(0,len(comb_temp)):
+            item_temp = comb_temp[i]
+
+            if str(item_temp) == 'Missing':
+                item = None
+                data_map_temp = {item: str(item_temp)}
+                data_map.update(data_map_temp)               
+
+            else:
+                for j in range(0,len(item_temp)):
+                    item = item_temp[j]
+                    data_map_temp = {item: str(item_temp)}
+                    data_map.update(data_map_temp)
+
+        test[str(var)+'_Bin']=test[var].map(data_map).astype(str)
+        score_pt = scorecard[scorecard.Variable_Name == var][['Bin','Points']]
+        score_pt.Bin = score_pt.Bin.astype('string')
+        score_pt.Points = score_pt.Points.astype('float')
+        score_pt = score_pt.rename(columns={'Bin': str(var)+'_Bin'})
+        score_pt = score_pt.rename(columns={'Points': str(var)+'_Points'})
+
+
+        test[str(var)+'_Bin'] = test[str(var)+'_Bin'].astype('string')
+        test = pd.merge(test,score_pt,how = 'left',on = str(var)+'_Bin')
+        
+      
+        
+    
+# Python program to demonstrate creating
+# pandas Dataframe from lists using zip.
+ 
+import pandas as pd
+ 
+# List1
+Name = ['tom', 'krish', 'nick', 'juli']
+ 
+# List2
+Age = [25, 30, 26, 22]
+ 
+# get the list of tuples from two lists.
+# and merge them by using zip().
+list_of_tuples = list(zip(Name, Age))
+ 
+# Assign data to tuples.
+list_of_tuples
+        
+
+str(item_temp)
+
+ 
+
+comb_temp = scorecard[scorecard.Variable_Name == var]['Bin'].tolist()
+
+ 
+
+ 
+
+ 
+
+ 
+
+len(c[0])
+
+ 
+
+c[2]
+
+ 
+
+len(c)
+
+ 
+
+np.array_split(c,1)
+
+ 
+
+ 
+
+#Handling numerical first
+
+numerical_card = scorecard[scorecard.Dtype == 'numerical'].reset_index()
+
+numerical_card = numerical_card.drop('index', axis = 1)
+
+ 
+
+numerical_card[['LARGER_OR_EQUAL', 'LESS_THEN']] = numerical_card["Bin"].apply(lambda x: pd.Series(str(x).split(", ")))
+
+numerical_card = numerical_card.drop('LARGER_OR_EQUAL', axis = 1)
+
+numerical_card['LESS_THEN'] = numerical_card['LESS_THEN'].str.rstrip(')').astype(float)
+
+ 
+
+list(numerical_card['LESS_THEN'])
+
+num_map = {}
+
+for i in set(numerical_card.Variable_Name):
+
+    the_list = list(numerical_card[numerical_card.Variable_Name == i]['LESS_THEN'])
+
+    the_list = [x for x in the_list if np.isnan(x) == False]
+
+    num_map_temp = {i:the_list}
+
+    num_map.update(num_map_temp)
+
+
+
+
+
+
  
 # Function for Turning New X to Point
 
