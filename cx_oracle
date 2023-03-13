@@ -1,0 +1,16 @@
+def extract_ser(sql):
+    print("Starting...")
+    start_time = time.time()
+    
+    conn = cx_Oracle.connect("id", "p", "i")
+    cursor = conn.cursor()
+    cursor.arraysize = 10000
+    
+    results = cursor.execute(sql).fetchall()
+    df = pd.DataFrame(results, columns=[i[0] for i in cursor.description])
+    
+    end_time = time.time()
+    elapsed_time = end_time - start_time
+    print(f"elapsed time: {elapsed_time}")
+    conn.close()
+    return df
